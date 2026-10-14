@@ -1,0 +1,144 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct Person {
+    char name[30];
+    char surname[30];
+    int year;
+    struct Person* next;
+} Person, * Position;
+
+//  Dodavanje na pocetak liste
+int insertBegin(const char* ime, const char* prezime, int god, Position P) {
+    Position newPerson = (Position) malloc(sizeof(Person));
+
+    if (newPerson == NULL)
+        return -1;
+
+    strcpy(newPerson->name, ime);
+    strcpy(newPerson->surname, prezime);
+    newPerson->year = god;
+
+    newPerson->next = P->next;
+    P->next = newPerson;
+
+    return 0;
+}
+
+// Ispis liste
+void printList(Position P) {
+    Position temp = P->next;
+
+    while (temp != NULL) {
+        printf("%s %s %d\n",
+            temp->name,
+            temp->surname,
+            temp->year);
+
+        temp = temp->next;
+    }
+}
+
+// C. Dodavanje na kraj liste
+int insertEnd(const char* ime, const char* prezime, int god, Position P) {
+    Position newPerson = (Position) malloc(sizeof(Person));
+
+    if (newPerson == NULL)
+        return -1;
+
+    strcpy(newPerson->name, ime);
+    strcpy(newPerson->surname, prezime);
+    newPerson->year = god;
+    newPerson->next = NULL;
+
+    Position temp = P;
+
+    while (temp->next != NULL) {
+        temp = temp->next;
+    }
+
+    temp->next = newPerson;
+
+    return 0;
+}
+
+// Pronalazenje po prezimenu
+Position findSurname(const char* prezime, Position P) {
+    Position temp = P->next;
+
+    while (temp != NULL) {
+        if (strcmp(temp->surname, prezime) == 0)
+            return temp;
+
+        temp = temp->next;
+    }
+
+    return NULL;
+}
+
+// Brisanje po prezimenu
+ int deletePerson(const char* prezime, Position P) {
+    Position prev = P;
+
+    while (prev->next != NULL &&
+        strcmp(prev->next->surname, prezime) != 0) {
+        prev = prev->next;
+    }
+
+    if (prev->next == NULL)
+        return -1;
+
+    Position temp = prev->next;
+    prev->next = temp->next;
+
+    free(temp);
+
+    return 0;
+}
+
+int main() {
+    Person Head = { 0 };
+    Position P = &Head;
+    Position pronadena;
+
+    insertBegin( "Ana", "Anic", 2000, P);
+    insertBegin( "Marko", "Markic", 1999, P);
+    insertEnd( "Ivan", "Ivic", 2002, P);
+
+    printf("Lista osoba:\n");
+    printList(P);
+
+    printf("\nPretraga po prezimenu:\n");
+    pronadena = findSurname("Ivic", P);
+
+    if (pronadena != NULL) {
+        printf("Pronadena osoba: %s %s %d\n",
+            pronadena->name,
+            pronadena->surname,
+            pronadena->year);
+    }
+    else {
+        printf("Osoba nije pronadena.\n");
+    }
+
+    printf("\nBrisanje osobe s prezimenom Anic:\n");
+
+    if (deletePerson("Anic", P) == 0)
+        printf("Osoba je obrisana.\n");
+    else
+        printf("Osoba nije pronadena.\n");
+
+    printf("\nLista nakon brisanja:\n");
+    printList(P);
+
+    // Oslobadanje memorije
+    while (P->next != NULL) {
+        Position temp = P->next;
+        P->next = temp->next;
+        free(temp);
+    }
+
+    return 0;
+}
