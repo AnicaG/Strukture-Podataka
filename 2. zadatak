@@ -41,7 +41,8 @@ void printList(Position P) {
     }
 }
 
-// C. Dodavanje na kraj liste
+//
+Dodavanje na kraj liste
 int insertEnd(const char* ime, const char* prezime, int god, Position P) {
     Position newPerson = (Position) malloc(sizeof(Person));
 
