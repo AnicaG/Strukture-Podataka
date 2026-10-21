@@ -28,7 +28,7 @@ int insertBegin(const char* ime, const char* prezime, int god, Position P) {
 }
 
 // Ispis liste
-void printList(Position P) {
+int printList(Position P) {
     Position temp = P->next;
 
     while (temp != NULL) {
