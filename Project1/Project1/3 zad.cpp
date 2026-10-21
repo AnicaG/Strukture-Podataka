@@ -1,0 +1,332 @@
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define DATOTEKA "osobe.txt"
+
+typedef struct Person {
+    char name[30];
+    char surname[30];
+    int year;
+    struct Person* next;
+} Person, * Position;
+
+// Dodavanje na pocetak liste
+int insertBegin(const char* ime, const char* prezime, int god, Position P)
+{
+    Position novi = (Position)malloc(sizeof(Person));
+
+    if (novi == NULL)
+        return -1;
+
+    strcpy(novi->name, ime);
+    strcpy(novi->surname, prezime);
+    novi->year = god;
+
+    novi->next = P->next;
+    P->next = novi;
+
+    return 0;
+}
+
+// Dodavanje na kraj liste
+int insertEnd(const char* ime, const char* prezime, int god, Position P)
+{
+    Position novi = (Position)malloc(sizeof(Person));
+
+    if (novi == NULL)
+        return -1;
+
+    strcpy(novi->name, ime);
+    strcpy(novi->surname, prezime);
+    novi->year = god;
+    novi->next = NULL;
+
+    Position temp = P;
+
+    while (temp->next != NULL)
+        temp = temp->next;
+
+    temp->next = novi;
+
+    return 0;
+}
+
+// Pronalaženje osobe po prezimenu
+Position findSurname(const char* prezime, Position P)
+{
+    Position temp = P->next;
+
+    while (temp != NULL) {
+        if (strcmp(temp->surname, prezime) == 0)
+            return temp;
+
+        temp = temp->next;
+    }
+
+    return NULL;
+}
+
+// Brisanje osobe po prezimenu
+int deletePerson(const char* prezime, Position P)
+{
+    Position prev = P;
+
+    while (prev->next != NULL &&
+        strcmp(prev->next->surname, prezime) != 0)
+        prev = prev->next;
+
+    if (prev->next == NULL)
+        return -1;
+
+    Position temp = prev->next;
+    prev->next = temp->next;
+
+    free(temp);
+
+    return 0;
+}
+
+// A) Dodavanje novog elementa iza odredene osobe
+int insertAfter(const char* prezime, const char* ime,
+    const char* novoPrezime, int god, Position head)
+{
+    Position trazena = findSurname(prezime, head);
+
+    if (trazena == NULL)
+        return -1;
+
+    Position novi = (Position)malloc(sizeof(Person));
+
+    if (novi == NULL)
+        return -1;
+
+    strcpy(novi->name, ime);
+    strcpy(novi->surname, novoPrezime);
+    novi->year = god;
+
+    novi->next = trazena->next;
+    trazena->next = novi;
+
+    return 0;
+}
+
+// B) Dodavanje novog elementa ispred odredene osobe
+int insertBefore(const char* prezime, const char* ime,
+    const char* novoPrezime, int god, Position head)
+{
+    Position prethodni = head;
+
+    while (prethodni->next != NULL &&
+        strcmp(prethodni->next->surname, prezime) != 0)
+        prethodni = prethodni->next;
+
+    if (prethodni->next == NULL)
+        return -1;
+
+    Position novi = (Position)malloc(sizeof(Person));
+
+    if (novi == NULL)
+        return -1;
+
+    strcpy(novi->name, ime);
+    strcpy(novi->surname, novoPrezime);
+    novi->year = god;
+
+    novi->next = prethodni->next;
+    prethodni->next = novi;
+
+    return 0;
+}
+
+// C) Sortiranje liste po prezimenima
+int Sort(Position head)
+{
+    if (head == NULL)
+        return -1;
+
+    Position sortirana = NULL;
+    Position tekuci = head->next;
+
+    while (tekuci != NULL) {
+        Position sljedeci = tekuci->next;
+
+        if (sortirana == NULL ||
+            strcmp(tekuci->surname, sortirana->surname) < 0) {
+            tekuci->next = sortirana;
+            sortirana = tekuci;
+        }
+        else {
+            Position p = sortirana;
+
+            while (p->next != NULL &&
+                strcmp(p->next->surname, tekuci->surname) <= 0)
+                p = p->next;
+
+            tekuci->next = p->next;
+            p->next = tekuci;
+        }
+
+        tekuci = sljedeci;
+    }
+
+    head->next = sortirana;
+
+    return 0;
+}
+
+// D) Upis liste u datoteku
+int writeToFile(Position head)
+{
+    FILE* dat = fopen(DATOTEKA, "w");
+
+    if (dat == NULL)
+        return -1;
+
+    Position p = head->next;
+
+    while (p != NULL) {
+        if (fprintf(dat, "%s %s %d\n",
+            p->name, p->surname, p->year) < 0) {
+            fclose(dat);
+            return -1;
+        }
+
+        p = p->next;
+    }
+
+    fclose(dat);
+
+    return 0;
+}
+
+// E) Citanje liste iz datoteke
+int readFromFile(Position head)
+{
+    FILE* dat = fopen(DATOTEKA, "r");
+
+    if (dat == NULL)
+        return -1;
+
+    char ime[30];
+    char prezime[30];
+    int god;
+
+    while (fscanf(dat, "%29s %29s %d",
+        ime, prezime, &god) == 3) {
+        if (insertEnd(ime, prezime, god, head) != 0) {
+            fclose(dat);
+            return -1;
+        }
+    }
+
+    fclose(dat);
+
+    return 0;
+}
+
+// Ispis liste
+void printList(Position P)
+{
+    Position temp = P->next;
+
+    while (temp != NULL) {
+        printf("%s %s %d\n",
+            temp->name,
+            temp->surname,
+            temp->year);
+
+        temp = temp->next;
+    }
+}
+
+// Oslobadanje svih elemenata liste
+void freeList(Position head)
+{
+    Position temp;
+
+    while (head->next != NULL) {
+        temp = head->next;
+        head->next = temp->next;
+        free(temp);
+    }
+}
+
+int main(void)
+{
+    Person Head = { 0 };
+    Position P = &Head;
+    Position pronadena;
+
+    insertBegin("Ana", "Anic", 2000, P);
+    insertBegin("Marko", "Markic", 1999, P);
+    insertEnd("Ivan", "Ivic", 2002, P);
+
+    printf("Pocetna lista:\n");
+    printList(P);
+
+    // Pretrazivanje
+    printf("\nPretraga po prezimenu:\n");
+
+    pronadena = findSurname("Ivic", P);
+
+    if (pronadena != NULL)
+        printf("Pronadena osoba: %s %s %d\n",
+            pronadena->name,
+            pronadena->surname,
+            pronadena->year);
+    else
+        printf("Osoba nije pronadena.\n");
+
+    // A) Dodavanje iza osobe
+    insertAfter("Anic", "Petar", "Peric", 2001, P);
+
+    // B) Dodavanje ispred osobe
+    insertBefore("Ivic", "Maja", "Majic", 2003, P);
+
+    printf("\nLista nakon dodavanja:\n");
+    printList(P);
+
+    // C) Sortiranje po prezimenu
+    Sort(P);
+
+    printf("\nSortirana lista:\n");
+    printList(P);
+
+    // D) Upis u datoteku
+    if (writeToFile(P) == 0)
+        printf("\nLista je upisana u datoteku %s.\n", DATOTEKA);
+    else
+        printf("\nGreska pri upisu u datoteku.\n");
+
+    // Brisanje osobe
+    printf("\nBrisanje osobe s prezimenom Anic:\n");
+
+    if (deletePerson("Anic", P) == 0)
+        printf("Osoba je obrisana.\n");
+    else
+        printf("Osoba nije pronadena.\n");
+
+    printf("\nLista nakon brisanja:\n");
+    printList(P);
+
+    // E) Citanje iz datoteke
+    // Prvo praznimo listu da ne bismo dobili duplikate.
+    freeList(P);
+
+    if (readFromFile(P) == 0) {
+        printf("\nLista ucitana iz datoteke:\n");
+        printList(P);
+    }
+    else {
+        printf("\nGreska pri citanju datoteke.\n");
+    }
+
+    // Oslobadanje memorije
+    freeList(P);
+
+    // Head je lokalna varijabla, zato se ne poziva free(P).
+    return 0;
+}
