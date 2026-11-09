@@ -1,0 +1,37 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\anica\\OneDrive\\Desktop\\Strukture\\ZADATAK 5\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{270FCEE3-88BD-4684-9BE2-4546E28DA70D}|ZADATAK 5\\ZADATAK 5.vcxproj|C:\\Users\\anica\\OneDrive\\Desktop\\Strukture\\ZADATAK 5\\ZADATAK 5\\zad5.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{270FCEE3-88BD-4684-9BE2-4546E28DA70D}|ZADATAK 5\\ZADATAK 5.vcxproj|solutionrelative:ZADATAK 5\\zad5.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "zad5.cpp",
+              "DocumentMoniker": "C:\\Users\\anica\\OneDrive\\Desktop\\Strukture\\ZADATAK 5\\ZADATAK 5\\zad5.cpp",
+              "RelativeDocumentMoniker": "ZADATAK 5\\zad5.cpp",
+              "ToolTip": "C:\\Users\\anica\\OneDrive\\Desktop\\Strukture\\ZADATAK 5\\ZADATAK 5\\zad5.cpp",
+              "RelativeToolTip": "ZADATAK 5\\zad5.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-11-09T18:47:32.767Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

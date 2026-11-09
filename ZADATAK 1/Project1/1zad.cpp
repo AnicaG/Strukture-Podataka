@@ -13,7 +13,7 @@ int main() {
     int i = 0;
 
     stud* Studenti = NULL;
-    char buffer[50] = {0};
+    char buffer[50] = { 0 };
 
     FILE* fp = fopen("list.txt", "r");
 
